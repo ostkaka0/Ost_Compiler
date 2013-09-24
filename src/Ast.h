@@ -4,9 +4,9 @@
 
 class Expr;
 
-class BinOp;
-class AssignOp;
-class LogicOp;
+class BinOp { public: static enum class Enum; };
+class AssignOp { public: static enum class Enum : char; };
+class LogicOp { public: static enum class Enum : char; };
 
 class Stmt
 {
@@ -114,7 +114,7 @@ public:
 
 /****    ****    Expressions    ****    ****/
 
-class Expr : char
+class Expr
 {
 };
 
@@ -139,7 +139,7 @@ public:
 class Logic : public Expr
 {
 public:
-	LogicOp LogicOp;
+	LogicOp::Enum LogicOp;
 	Expr *Expr;
 };
 
@@ -155,7 +155,7 @@ class BindExpr : public Expr
 public:
 	Expr *Left;
 	Expr *Right;
-	BinOp Op;
+	BinOp::Enum Op;
 };
 
 class CondutionalEvaluation : public Expr
@@ -177,24 +177,33 @@ class Object
 {
 };
 
+
+
+class Char : public Object
+{
+public:
+	char Value;
+};
+
 class String : public Object
 {
+public:
 	std::string Value;
 };
 
 class Boolean : public Object
 {
+public:
 	bool Value;
-}
+};
 
 class Integer : public Object
 {
+public:
 	int Value;
 };
 
-class BinOp : Object
-{
-	static enum class Enum : char
+enum class BinOp::Enum
 	{
 		ADD,
 		SUB,
@@ -216,7 +225,6 @@ class BinOp : Object
 		MOREOREQUAL,
 		LESSOREQUAL
 	} Value;
-};
 
 class AssignOp : Object
 {
@@ -234,7 +242,10 @@ class AssignOp : Object
 
 		ASSIGN_OR,
 		ASSIGN_AND,
-		ASSIGN_XOR
+		ASSIGN_XOR,
+
+		ASSIGN_B_OR,
+		ASSIGN_B_AND
 	} Value;
 };
 

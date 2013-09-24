@@ -15,7 +15,7 @@ public:
 	Scanner(std::ifstream &reader);
 	std::vector<void*> *GetTokens();
 
-#pragma region ArithmethicConstants
+#pragma region Constants
 	static void *const Add;
 	static void *const Sub;
 	static void *const Mul;
