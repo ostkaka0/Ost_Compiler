@@ -35,7 +35,7 @@
     <ClInclude Include="Parser.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="Enums.h">
+    <ClInclude Include="ByteObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

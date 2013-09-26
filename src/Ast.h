@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "ByteObjects.h"
+
 class Expr;
 
 class BinOp;
@@ -173,33 +175,7 @@ public:
 	std::string Ident;
 };
 
-class Object
-{
-};
 
 
 
-class Char : public Object
-{
-public:
-	char Value;
-};
-
-class String : public Object
-{
-public:
-	std::string Value;
-};
-
-class Boolean : public Object
-{
-public:
-	bool Value;
-};
-
-class Integer : public Object
-{
-public:
-	int Value;
-};
 

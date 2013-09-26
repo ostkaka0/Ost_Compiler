@@ -69,13 +69,22 @@ Stmt *Parser::ParseStmt(int maximumSequences)
 
 			if (index < tokens->size())
 			{
-				if (typeid((*tokens)[index]) == typeid(string) &&
-					*reinterpret_cast<string*>((*tokens)[index]) == "}")
+				if (typeid((*tokens)[index]) == typeid(string))
 				{
-					Sequence *sequence = new Sequence();
-					sequence->First = result;
-					sequence->Second = ParseStmt((maximumSequences == 0)? 0:maximumSequences-1);
+					string str = *reinterpret_cast<string*>((*tokens)[index]);
+					if (str == "{"
+					{
+
+					}
+					else if (str == "}")
+					{
+						return result;
+					}
 				}
+						Sequence *sequence = new Sequence();
+						sequence->First = result;
+						sequence->Second = ParseStmt((maximumSequences == 0)? 0:maximumSequences-1);
+						result = sequence;
 			}
 		}
 	}
