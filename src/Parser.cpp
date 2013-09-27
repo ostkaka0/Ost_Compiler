@@ -81,11 +81,15 @@ Stmt *Parser::ParseStmt(int maximumSequences)
 						return result;
 					}
 				}
-						Sequence *sequence = new Sequence();
-						sequence->First = result;
-						sequence->Second = ParseStmt((maximumSequences == 0)? 0:maximumSequences-1);
-						result = sequence;
+				Sequence *sequence = new Sequence();
+				sequence->First = result;
+				sequence->Second = ParseStmt((maximumSequences == 0)? 0:maximumSequences-1);
+				result = sequence;
 			}
+		}
+		else
+		{
+			throw "expected ';'";
 		}
 	}
 	else
@@ -102,7 +106,7 @@ Expr *Parser::ParseExpr()
 	{
 		throw "expected expression, got end of file.";
 	}
-	else if (typeid(tokens[index]) == typeid(int))
+	else if (typeid(tokens[index]) == typeid(Literal<int>))
 	{
 		int intValue = *static_cast<int*>((*tokens)[index]);
 		IntLiteral *intLiteral = new IntLiteral();
@@ -117,6 +121,12 @@ Expr *Parser::ParseExpr()
 		}
 
 		return intLiteral;
+	}
+	else if (typeid(tokens[index]) == typeid(Literal<string>))
+	{
+		StringLiteral *stringLiteral = new StringLiteral(
+			(string)*(static_cast<Literal<string>*>
+			(tokens[index])));
 	}
 	else
 	{
