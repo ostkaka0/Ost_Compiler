@@ -7,6 +7,8 @@
 
 #include "Ast.h";
 
+#define DEFINE_CONSTANT(_name) static Object *const _name
+
 class Scanner
 {
 	std::vector<void*> *result;
@@ -16,45 +18,44 @@ public:
 	std::vector<void*> *GetTokens();
 
 #pragma region Constants
-	static void *const Add;
-	static void *const Sub;
-	static void *const Mul;
-	static void *const Div;
-	static void *const Mod;
+	DEFINE_CONSTANT(ADD);
+	DEFINE_CONSTANT(SUB);
+	DEFINE_CONSTANT(MUL);
+	DEFINE_CONSTANT(DIV);
+	DEFINE_CONSTANT(MOD);
 
-	static void *const ShiftLeft;
-	static void *const ShiftRight;
+	DEFINE_CONSTANT(SHIFT_LEFT);
+	DEFINE_CONSTANT(SHIFT_RIGHT);
 
-	static void *const Or;
-	static void *const And;
-	static void *const Xor;
+	DEFINE_CONSTANT(OR);
+	DEFINE_CONSTANT(AND);
+	DEFINE_CONSTANT(XOR);
+	DEFINE_CONSTANT(B_OR);
+	DEFINE_CONSTANT(B_AND);
 
-	static void *const Not;
+	DEFINE_CONSTANT(NOT);
+	DEFINE_CONSTANT(B_NOT);
 
-	static void *const B_Not;
-	static void *const B_Or;
-	static void *const B_And;
+	DEFINE_CONSTANT(EQUAL);
+	DEFINE_CONSTANT(NOTEQUAL);
+	DEFINE_CONSTANT(MORE);
+	DEFINE_CONSTANT(LESS);
+	DEFINE_CONSTANT(MORE_OR_EQUAL);
+	DEFINE_CONSTANT(LESS_OR_EQUAL);
 
-	static void *const Equal;
-	static void *const NotEqual;
-	static void *const More;
-	static void *const Less;
-	static void *const MoreOrEqual;
-	static void *const LessOrEqual;
-
-	static void *const Assign_;
-	static void *const Assign_Add;
-	static void *const Assign_Sub;
-	static void *const Assign_Mul;
-	static void *const Assign_Div;
-	static void *const Assign_Mod;
-	static void *const Assign_ShiftLeft;
-	static void *const Assign_ShiftRight;
-	static void *const Assign_Or;
-	static void *const Assign_And;
-	static void *const Assign_Xor;
-	static void *const Assign_B_Or;
-	static void *const Assign_B_And;
+	DEFINE_CONSTANT(ASSIGN);
+	DEFINE_CONSTANT(ASSIGN_ADD);
+	DEFINE_CONSTANT(ASSIGN_SUB);
+	DEFINE_CONSTANT(ASSIGN_MUL);
+	DEFINE_CONSTANT(ASSIGN_DIV);
+	DEFINE_CONSTANT(ASSIGN_MOD);
+	DEFINE_CONSTANT(ASSIGN_SHIFT_LEFT);
+	DEFINE_CONSTANT(ASSIGN_SHIFT_RIGHT);
+	DEFINE_CONSTANT(ASSIGN_OR);
+	DEFINE_CONSTANT(ASSIGN_AND);
+	DEFINE_CONSTANT(ASSIGN_XOR);
+	DEFINE_CONSTANT(ASSIGN_B_OR);
+	DEFINE_CONSTANT(ASSIGN_B_AND);
 #pragma endregion
 
 private:

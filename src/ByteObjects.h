@@ -1,36 +1,112 @@
 #pragma once
 #include "Ast.h"
 
-#define ENUM_CONSTRUCTOR(name) name(name::Enum value) { Value = value; }
 #define SINGLE_ARG(...) __VA_ARGS__
-#define ENUM_CLASS(name,_enum) class name : EnumClass { public: static enum class Enum : char { _enum } Value; ENUM_CONSTRUCTOR(name) }
+#define ENUM_CLASS(_name,_enum)\
+class _name : public EnumClass\
+{\
+public:\
+	static enum class Enum : char\
+	{\
+		_enum\
+	};\
+	_name::Enum Value;\
+	_name(_name::Enum value)\
+	{\
+		Value = value;\
+	}\
+}
+
+//#define LITERAL(_type, _name) class _name : public Object { public: _type Value; _name(_type value) { Value = value } }
 
 class Object
 {
 };
 
-class Char : public Object
+/*class CharLiteral : public Object
 {
 public:
 	char Value;
+	Char(char value)
+	{
+		Value = value;
+	}
 };
 
-class String : public Object
+class StringLiteral : public Object
 {
 public:
 	std::string Value;
+	String(string value)
+	{
+		Value = value;
+	}
 };
 
-class Boolean : public Object
+class BooleanLiteral : public Object
 {
 public:
 	bool Value;
+	Boolean(bool value)
+	{
+		Value = value;
+	}
 };
 
-class Integer : public Object
+class IntegerLiteral : public Object
 {
 public:
 	int Value;
+	Integer(int value)
+	{
+		Value = value;
+	}
+};*/
+
+template<typename T> class Literal
+{
+public:
+	T Value;
+	Literal(T value)
+	{
+		Value = value;
+	}
+
+	inline bool operator==(const T &right) { return Value == right; }
+	inline bool operator!=(const T &right) { return Value != right; }
+	inline bool operator< (const T &ritht) { return Value <  right; }
+	inline bool operator> (const T &right) { return Value >  right; }
+	inline bool operator<=(const T &right) { return Value <= right; }
+	inline bool operator>=(const T &right) { return Value >= right; }
+
+	inline T operator+(const Literal<T> &right) { return Value+right.Value; }
+	inline T operator-(const T &right) { return Value-right; }
+	inline T operator*(const T &right) { return Value*right; }
+	inline T operator/(const T &right) { return Value/right; }
+	inline T operator%(const T &right) { return Value%right; }
+
+	Literal<T> &operator=(const T &right)
+	{
+		Value = right;
+		return *this;
+	}
+
+	operator T&()
+	{
+		return Value;
+	}
+
+	std::ostream& operator<<(std::ostream& os)
+	{
+		os << Value;
+		return os;
+	}
+	std::istream& operator>>(std::istream& is)
+	{
+	  is >> Value;
+	  return is;
+	}
+
 };
 
 class EnumClass : public Object
@@ -38,25 +114,28 @@ class EnumClass : public Object
 };
 
 ENUM_CLASS(BinOp, SINGLE_ARG(
-	ADD,
+	ADD = 0,
 	SUB,
 	MUL,
 	DIV,
 	MOD,
 
-	SHIFTLEFT,
-	SHIFTRIGHT,
+	SHIFT_LEFT,
+	SHIFT_RIGHT,
 
 	OR,
 	AND,
 	XOR,
 
+	B_OR,
+	B_AND,
+
 	EQUAL,
 	NOTEQUAL,
 	MORE,
 	LESS,
-	MOREOREQUAL,
-	LESSOREQUAL,
+	MORE_OR_EQUAL,
+	LESS_OR_EQUAL,
 
 	ENUM_END
 ));
@@ -69,8 +148,8 @@ ENUM_CLASS(AssignOp, SINGLE_ARG(
 	ASSIGN_DIV,
 	ASSIGN_MOD,
 
-	ASSIGN_SHIFTLEFT,
-	ASSIGN_SHIFTRIGHT,
+	ASSIGN_SHIFT_LEFT,
+	ASSIGN_SHIFT_RIGHT,
 
 	ASSIGN_OR,
 	ASSIGN_AND,
@@ -84,6 +163,7 @@ ENUM_CLASS(AssignOp, SINGLE_ARG(
 
 ENUM_CLASS(LogicOp, SINGLE_ARG(
 	NOT = AssignOp::Enum::ENUM_END,
+	B_NOT,
 	PLUSPLUS,
 	MINUSMINUS,
 	REF,

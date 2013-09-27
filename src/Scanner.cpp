@@ -1,8 +1,52 @@
 #include <sstream>
 
 #include "Scanner.h"
+#include "ByteObjects.h"
+
+#define DECLARE_CLASS_ENUM_OBJ(_enum,_value) Object *const Scanner::_value = new _enum(_enum::Enum::_value)
 
 using namespace std;
+
+#pragma region Constants
+	DECLARE_CLASS_ENUM_OBJ(BinOp,ADD);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,SUB);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,MUL);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,DIV);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,MOD);
+
+	DECLARE_CLASS_ENUM_OBJ(BinOp,SHIFT_LEFT);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,SHIFT_RIGHT);
+
+	DECLARE_CLASS_ENUM_OBJ(BinOp,OR);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,AND);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,XOR);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,B_OR);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,B_AND);
+
+	DECLARE_CLASS_ENUM_OBJ(LogicOp,NOT);
+	DECLARE_CLASS_ENUM_OBJ(LogicOp,B_NOT);
+
+	DECLARE_CLASS_ENUM_OBJ(BinOp,EQUAL);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,NOTEQUAL);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,MORE);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,LESS);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,LESS_OR_EQUAL);
+	DECLARE_CLASS_ENUM_OBJ(BinOp,MORE_OR_EQUAL);
+
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_ADD);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_SUB);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_MUL);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_DIV);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_MOD);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_SHIFT_LEFT);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_SHIFT_RIGHT);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_OR);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_AND);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_XOR);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_B_OR);
+	DECLARE_CLASS_ENUM_OBJ(AssignOp,ASSIGN_B_AND);
+#pragma endregion
 
 Scanner::Scanner(ifstream &reader)
 {
@@ -49,10 +93,10 @@ void Scanner::Scan(stringstream &reader)
 			}
 			while(reader >> ch && IsDigit(ch));
 
-			int *integer;
-			sstream >> *integer;
+			int integer;
+			sstream >> integer;
 
-			result->push_back(integer);
+			result->push_back(new Literal<int>(integer));
 		}
 		else if (ch == '"')
 		{
@@ -66,16 +110,16 @@ void Scanner::Scan(stringstream &reader)
 			while(reader >> ch && ch != '"');
 
 			sstream << '"';
-			string *str = new string();
-			sstream >> *str;
-			result->push_back(str);
+			string str;
+			sstream >> str;
+			result->push_back(new Literal<string>(str));
 			reader >> ch;
 		}
 		else if (ch == '\'')
 		{
 			reader >> ch;
 			reader >> ch;
-			result->push_back(new char(ch));
+			result->push_back(new Literal<char>(ch));
 			reader >> ch;
 		}
 		else switch(ch)
@@ -105,13 +149,13 @@ void Scanner::Scan(stringstream &reader)
 						c == '<' || c == '>'))
 				{
 					char characters[] = {c,ch}; 
-					result->push_back(new string(characters));
+					result->push_back(ToArithmethicConstant(string(characters)));
 					break;
 				}
 				else
 				{
 					reader << c;
-					result->push_back(new string(&ch));
+					result->push_back(ToArithmethicConstant(ch));
 				}
 			}
 			break;
@@ -123,7 +167,7 @@ void Scanner::Scan(stringstream &reader)
 		case '[':
 		case ']':
 		case ';':
-			result->push_back(new string(&ch));
+			result->push_back(ToArithmethicConstant(ch));
 			break;
 		}
 	}
@@ -146,34 +190,34 @@ void *Scanner::ToArithmethicConstant(char c)
 	switch(c)
 	{
 	case '+':
-		return Scanner::Add;
+		return Scanner::ADD;
 	case '-':
-		return Scanner::Sub;
+		return Scanner::SUB;
 	case '*':
-		return Scanner::Mul;
+		return Scanner::MUL;
 	case '/':
-		return Scanner::Div;
+		return Scanner::DIV;
 	case '%':
-		return Scanner::Mod;
+		return Scanner::MOD;
 
 	case '|':
-		return Scanner::Or;
+		return Scanner::OR;
 	case '&':
-		return Scanner::And;
+		return Scanner::AND;
 	case '^':
-		return Scanner::Xor;
+		return Scanner::XOR;
 
 	case '~':
-		return Scanner::Not;
+		return Scanner::NOT;
 	case '!':
-		return Scanner::B_Not;
+		return Scanner::B_NOT;
 
 	case '=':
-		return Scanner::Equal;
+		return Scanner::EQUAL;
 	case '>':
-		return Scanner::More;
+		return Scanner::MORE;
 	case '<':
-		return Scanner::Less;
+		return Scanner::LESS;
 
 	default:
 		throw "undefined arithmethic constant '" + string(&c) + "'";
@@ -184,75 +228,75 @@ void *Scanner::ToArithmethicConstant(string str)
 {
 	if (str == "||")
 	{
-		return Scanner::B_Or;
+		return Scanner::B_OR;
 	}
 	else if (str == "&&")
 	{
-		return Scanner::B_And;
+		return Scanner::B_AND;
 	}
 	else if (str == "==")
 	{
-		return Scanner::Equal;
+		return Scanner::EQUAL;
 	}
 	else if (str == "!=")
 	{
-		return Scanner::NotEqual;
+		return Scanner::NOTEQUAL;
 	}
 	else if (str == "<=")
 	{
-		return Scanner::LessOrEqual;
+		return Scanner::LESS_OR_EQUAL;
 	}
 	else if (str == ">=")
 	{
-		return Scanner::MoreOrEqual;
+		return Scanner::MORE_OR_EQUAL;
 	}
 	else if (str == "+=")
 	{
-		return Scanner::Assign_Add;
+		return Scanner::ASSIGN_ADD;
 	}
 	else if (str == "-=")
 	{
-		return Scanner::Assign_Sub;
+		return Scanner::ASSIGN_SUB;
 	}
 	else if (str == "*=")
 	{
-		return Scanner::Assign_Mul;
+		return Scanner::ASSIGN_MUL;
 	}
 	else if (str == "/=")
 	{
-		return Scanner::Assign_Div;
+		return Scanner::ASSIGN_DIV;
 	}
 	else if (str == "%=")
 	{
-		return Scanner::Assign_Mod;
+		return Scanner::ASSIGN_MOD;
 	}
 	else if (str == "<<=")
 	{
-		return Scanner::Assign_ShiftLeft;
+		return Scanner::ASSIGN_SHIFT_LEFT;
 	}
 	else if (str == ">>=")
 	{
-		return Scanner::Assign_ShiftRight;
+		return Scanner::ASSIGN_SHIFT_RIGHT;
 	}
 	else if (str == "|=")
 	{
-		return Scanner::Assign_Or;
+		return Scanner::ASSIGN_OR;
 	}
 	else if (str == "&=")
 	{
-		return Scanner::Assign_And;
+		return Scanner::ASSIGN_AND;
 	}
 	else if (str == "^=")
 	{
-		return Scanner::Assign_Xor;
+		return Scanner::ASSIGN_XOR;
 	}
 	else if (str == "||=")
 	{
-		return Scanner::Assign_B_Or;
+		return Scanner::ASSIGN_B_OR;
 	}
 	else if (str == "&&=")
 	{
-		return Scanner::Assign_B_And;
+		return Scanner::ASSIGN_B_AND;
 	}
 	else
 	{

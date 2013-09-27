@@ -72,7 +72,7 @@ Stmt *Parser::ParseStmt(int maximumSequences)
 				if (typeid((*tokens)[index]) == typeid(string))
 				{
 					string str = *reinterpret_cast<string*>((*tokens)[index]);
-					if (str == "{"
+					if (str == "{")
 					{
 
 					}
@@ -126,7 +126,7 @@ Expr *Parser::ParseExpr()
 
 Expr *Parser::ParseBindExpr(Expr *left)
 {
-	BindExpr *bindExpr = new BindExpr();
+	BindExpr *bindExpr = static_cast<BindExpr*>(malloc(sizeof(BindExpr)));
 	bindExpr->Left = left;
 	bindExpr->Op = *static_cast<BinOp*>((*tokens)[index]);
 	index++;
