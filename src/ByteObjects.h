@@ -1,14 +1,14 @@
 #pragma once
 #include "Ast.h"
 
-#define SINGLE_ARG(...) __VA_ARGS__
-#define ENUM_CLASS(_name,_enum)\
+//#define SINGLE_ARG(...) __VA_ARGS__
+#define ENUM_CLASS(_name,...)\
 class _name : public EnumClass\
 {\
 public:\
 	static enum class Enum : char\
 	{\
-		_enum\
+		__VA_ARGS__\
 	};\
 	_name::Enum Value;\
 	_name(_name::Enum value)\
@@ -113,7 +113,7 @@ class EnumClass : public Object
 {
 };
 
-ENUM_CLASS(BinOp, SINGLE_ARG(
+ENUM_CLASS(BinOp,
 	ADD = 0,
 	SUB,
 	MUL,
@@ -138,9 +138,9 @@ ENUM_CLASS(BinOp, SINGLE_ARG(
 	LESS_OR_EQUAL,
 
 	ENUM_END
-));
+);
 
-ENUM_CLASS(AssignOp, SINGLE_ARG(
+ENUM_CLASS(AssignOp,
 	ASSIGN = BinOp::Enum::ENUM_END,
 	ASSIGN_ADD,
 	ASSIGN_SUB,
@@ -159,9 +159,9 @@ ENUM_CLASS(AssignOp, SINGLE_ARG(
 	ASSIGN_B_AND,
 
 	ENUM_END
-));
+);
 
-ENUM_CLASS(LogicOp, SINGLE_ARG(
+ENUM_CLASS(LogicOp,
 	NOT = AssignOp::Enum::ENUM_END,
 	B_NOT,
 	PLUSPLUS,
@@ -173,9 +173,9 @@ ENUM_CLASS(LogicOp, SINGLE_ARG(
 	INDEX,
 
 	ENUM_END
-));
+);
 
-ENUM_CLASS(DeclareVariable, SINGLE_ARG(
+ENUM_CLASS(DeclareVariable,
 	DECLARE_INT = LogicOp::Enum::ENUM_END,
 	DECLARE_BOOLEAN,
 	DECLARE_CHAR,
@@ -185,9 +185,9 @@ ENUM_CLASS(DeclareVariable, SINGLE_ARG(
 	DECLARE_POINTER,
 
 	ENUM_END
-));
+);
 
-ENUM_CLASS(GetVariable, SINGLE_ARG(
+ENUM_CLASS(GetVariable,
 	GET_INT = LogicOp::Enum::ENUM_END,
 	GET_BOOLEAN,
 	GET_CHAR,
@@ -197,9 +197,9 @@ ENUM_CLASS(GetVariable, SINGLE_ARG(
 	GET_POINTER,
 
 	ENUM_END
-	));
+);
 
-ENUM_CLASS(PushVariable, SINGLE_ARG(
+ENUM_CLASS(PushVariable,
 	PUSH_INT = LogicOp::Enum::ENUM_END,
 	PUSH_TRUE,
 	PUSH_FALSE,
@@ -210,22 +210,22 @@ ENUM_CLASS(PushVariable, SINGLE_ARG(
 	PUSH_NULL,
 
 	ENUM_END
-	));
+);
 
-ENUM_CLASS(_DDF_, SINGLE_ARG(
+ENUM_CLASS(_DDF_, 
 	GOTO = PushVariable::Enum::ENUM_END,
 	IF_TRUE,
 	IF_FALSE,
 	CALL_METHOD,
 
 	ENUM_END
-	));
+);
 
-ENUM_CLASS(sdf, SINGLE_ARG(
+ENUM_CLASS(sdf,
 	GOTO = PushVariable::Enum::ENUM_END,
 	IF_TRUE,
 	IF_FALSE,
 	CALL_METHOD,
 
 	ENUM_END
-	));
+);
